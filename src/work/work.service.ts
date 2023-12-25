@@ -14,9 +14,9 @@ export class WorkService {
     try {
 
 
-      //const { title, description } = createWorkDto;
+      const { title, description } = createWorkDto;
 
-      const newWork = new this.workModel({ title: 'title', description: 'desc' });
+      const newWork = new this.workModel({ title, description });
 
       await newWork.save();
 
@@ -29,8 +29,23 @@ export class WorkService {
   }
 
 
-  findAll() {
-    return `This action returns all work`;
+  async findAll() {
+    try {
+      
+      const works = await this.workModel.find().sort('-createdAt')
+
+      if(works){
+        return(
+
+        )
+      }else{
+        console.log('Works not found');
+      }
+
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
 
   findOne(id: number) {
