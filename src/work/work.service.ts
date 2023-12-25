@@ -65,11 +65,11 @@ export class WorkService {
     }
   }
 
-  async update(id: number, updateWorkDto: UpdateWorkDto) {
+  async update(id: string, updateWorkDto: UpdateWorkDto) {
     return `This action updates a #${id} work`;
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return `This action removes a #${id} work`;
   }
 }
