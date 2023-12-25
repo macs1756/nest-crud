@@ -66,7 +66,18 @@ export class WorkService {
   }
 
   async update(id: string, updateWorkDto: UpdateWorkDto) {
-    return `This action updates a #${id} work`;
+
+    const { title, description } = updateWorkDto;
+
+    const updatedWork = await this.workModel.findByIdAndUpdate(id, { title, description }, {
+      new: true, 
+    }).exec();
+
+    if (!updatedWork) {
+      throw new Error('Failed to update work');
+    }
+
+    return updatedWork;
   }
 
   async remove(id: string) {
