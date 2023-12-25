@@ -35,28 +35,41 @@ export class WorkService {
       const works = await this.workModel.find().sort('-createdAt')
 
       if(works){
-        return(
-
-        )
+        return works;
       }else{
         console.log('Works not found');
+        throw new Error('Works not found');
       }
 
     } catch (error) {
       console.log(error);
-      
+      throw new Error('Failed to get works');
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} work`;
+
+  async findOne(id: string) {
+    try {
+      
+      const oneWork = await this.workModel.findById(id).exec();
+
+      if(oneWork){
+        return oneWork;
+      }else{
+        throw new Error('Failed to get one work');
+      }
+
+    } catch (error) {
+      console.log(error); 
+      throw new Error('Failed to get one work');
+    }
   }
 
-  update(id: number, updateWorkDto: UpdateWorkDto) {
+  async update(id: number, updateWorkDto: UpdateWorkDto) {
     return `This action updates a #${id} work`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} work`;
   }
 }
