@@ -70,6 +70,14 @@ export class WorkService {
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} work`;
+    try {
+      
+      await this.workModel.findByIdAndDelete(id);
+      return { message: 'Post deleted successfully' };
+
+    } catch (error) {
+      console.log(error);
+      throw new Error('Failed to delete work');
+    }
   }
 }
