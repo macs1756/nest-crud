@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Administrators } from 'src/schemas/user.schema';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { UpdateAdministratorDto } from './dto/update-administrator.dto';
 
+
 @Injectable()
 export class AdministratorsService {
-  create(createAdministratorDto: CreateAdministratorDto) {
+
+  constructor(@InjectModel('Administrators') private administatorsModel: Model<Administrators>) {}
 
 
+  async create(createAdministratorDto: CreateAdministratorDto) {
 
+    const {password, username} = createAdministratorDto
 
-    return 'test'
+    const newAdministrator = new this.administatorsModel({ password, username });
+
+    await newAdministrator.save();
+
+    return newAdministrator
   }
 
   findAll() {
