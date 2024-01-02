@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Administrators } from 'src/schemas/user.schema';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { UpdateAdministratorDto } from './dto/update-administrator.dto';
-
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdministratorsService {
@@ -16,7 +16,10 @@ export class AdministratorsService {
 
     const {password, username} = createAdministratorDto
 
-    const newAdministrator = new this.administatorsModel({ password, username });
+  
+    const hashPassword = await bcrypt.hash(password, 10);
+  
+    const newAdministrator =  new this.administatorsModel({ password: hashPassword, username });
 
     await newAdministrator.save();
 
