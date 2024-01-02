@@ -1,1 +1,4 @@
-export class CreateAdministratorDto {}
+export class CreateAdministratorDto {
+  username: string
+  password: string
+}
