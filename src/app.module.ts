@@ -13,8 +13,6 @@ import { AdministratorsModule } from './administrators/administrators.module';
   imports: [
     MongooseModule.forRoot('mongodb+srv://macs1756:test12345@cluster1.jidxccl.mongodb.net/blog?retryWrites=true&w=majority'), 
     WorkModule,
-    MongooseModule.forFeature([{ name: 'Work', schema: WorkSchema }]),
-    MongooseModule.forFeature([{ name: 'Administrators', schema: AdministratorsSchema }]),
     AdministratorsModule,
   ],
   controllers: [AppController],
