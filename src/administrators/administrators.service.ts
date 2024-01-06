@@ -25,7 +25,7 @@ export class AdministratorsService {
       const newAdministrator = new this.administatorsModel({ password: hashPassword, username });
       await newAdministrator.save();
       const jwtToken = jwt.sign({ id: newAdministrator._id}, this.jwtSicret);
-      return {jwt:jwtToken, user:newAdministrator}
+      return {jwt:jwtToken, administrator:newAdministrator}
     } else {
       return "Username is already in use"
     }
@@ -46,12 +46,11 @@ export class AdministratorsService {
 
         const jwtToken = jwt.sign({ id: administrator._id}, this.jwtSicret);
 
-        return {jwt: jwtToken}
+        return {jwt: jwtToken, administrator}
+
       }else{
         return 'Password is wrong';
       }
-
-   
 
     }else{
       return 'User not found';
