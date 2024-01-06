@@ -9,21 +9,25 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AdministratorsService {
 
-  constructor(@InjectModel('Administrators') private administatorsModel: Model<Administrators>) {}
+  constructor(@InjectModel('Administrators') private administatorsModel: Model<Administrators>) { }
 
 
   async create(createAdministratorDto: CreateAdministratorDto) {
 
-    const {password, username} = createAdministratorDto
+    const { password, username } = createAdministratorDto
 
-  
-    const hashPassword = await bcrypt.hash(password, 10);
-  
-    const newAdministrator =  new this.administatorsModel({ password: hashPassword, username });
+    const isUsed = await this.administatorsModel.findOne({ username: username })
+    
 
-    await newAdministrator.save();
+    if (!isUsed) {
+      const hashPassword = await bcrypt.hash(password, 10);
+      const newAdministrator = new this.administatorsModel({ password: hashPassword, username });
+      await newAdministrator.save();
+      return newAdministrator
+    } else {
+      return "Username is already in use"
+    }
 
-    return newAdministrator
   }
 
   findAll() {
