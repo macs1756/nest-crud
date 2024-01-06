@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AdministratorsService } from './administrators.service';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { UpdateAdministratorDto } from './dto/update-administrator.dto';
+import { loginAdministratorDto } from './dto/login-administrator.dto'
 
 @Controller('administrators')
 export class AdministratorsController {
@@ -12,14 +13,10 @@ export class AdministratorsController {
     return this.administratorsService.create(createAdministratorDto);
   }
 
-  @Get()
-  findAll() {
-    return this.administratorsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.administratorsService.findOne(+id);
+  
+  @Post('/login')
+  findOne(@Body() loginAdministratorDto: loginAdministratorDto) {
+    return this.administratorsService.login(loginAdministratorDto);
   }
 
   @Patch(':id')
