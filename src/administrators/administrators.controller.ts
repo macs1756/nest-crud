@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, Param, Delete } from '@nestjs/common';
 import { AdministratorsService } from './administrators.service';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
-import { UpdateAdministratorDto } from './dto/update-administrator.dto';
+import { loginAdministratorDto } from './dto/login-administrator.dto'
 
 @Controller('administrators')
 export class AdministratorsController {
@@ -12,19 +12,15 @@ export class AdministratorsController {
     return this.administratorsService.create(createAdministratorDto);
   }
 
-  @Get()
-  findAll() {
-    return this.administratorsService.findAll();
+  
+  @Post('/login')
+  login(@Body() loginAdministratorDto: loginAdministratorDto) {
+    return this.administratorsService.login(loginAdministratorDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.administratorsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdministratorDto: UpdateAdministratorDto) {
-    return this.administratorsService.update(+id, updateAdministratorDto);
+  @Get('/get-me')
+  getMe(@Headers() headers) {
+    return this.administratorsService.getMe(headers);
   }
 
   @Delete(':id')
