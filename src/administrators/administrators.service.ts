@@ -5,6 +5,7 @@ import { Administrators } from 'src/schemas/user.schema';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { UpdateAdministratorDto } from './dto/update-administrator.dto';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class AdministratorsService {
@@ -17,13 +18,17 @@ export class AdministratorsService {
     const { password, username } = createAdministratorDto
 
     const isUsed = await this.administatorsModel.findOne({ username: username })
-    
+
 
     if (!isUsed) {
       const hashPassword = await bcrypt.hash(password, 10);
       const newAdministrator = new this.administatorsModel({ password: hashPassword, username });
       await newAdministrator.save();
-      return newAdministrator
+
+      const jwtToken = jwt.sign({ foo: 'bar' }, 'shhhhh');
+
+
+      return {jwt:jwtToken, user:newAdministrator}
     } else {
       return "Username is already in use"
     }
