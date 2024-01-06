@@ -59,21 +59,27 @@ export class AdministratorsService {
   }
 
 
-  getMe(headers) {
+  async getMe(headers) {
 
     const authorizationHeader = headers.authorization;
     const clearAuthorizationHeader = authorizationHeader.replace('Bearer ', '')
 
-    jwt.verify(token, this.jwtSecret, (err, decoded) => {
-      if (err) {
-        return reject(err); // Токен не валідний або стався інший помилковий випадок
-      }
-
-      return resolve(decoded); // Розшифровані дані з токена
-    });
+    const verifyJWT:any = jwt.verify(clearAuthorizationHeader, this.jwtSicret);
 
 
-    return clearAuthorizationHeader;
+    if(verifyJWT){
+
+      const administator = await this.administatorsModel.findById(verifyJWT?.id)
+
+      return administator
+
+    }else{
+      return 'Token is invalid'
+    }
+    
+
+
+    return verifyJWT;
   }
 
   remove(id: number) {
