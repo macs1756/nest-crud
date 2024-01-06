@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,  Request } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Administrators } from 'src/schemas/user.schema';
@@ -58,8 +58,12 @@ export class AdministratorsService {
     
   }
 
-  update(id: number, updateAdministratorDto: UpdateAdministratorDto) {
-    return `This action updates a #${id} administrator`;
+
+  getMe(request) {
+
+    const authorizationHeader = request.headers.authorization;
+
+    return authorizationHeader;
   }
 
   remove(id: number) {
