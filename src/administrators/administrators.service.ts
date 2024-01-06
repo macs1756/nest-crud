@@ -33,7 +33,30 @@ export class AdministratorsService {
 
 
   async login(loginAdministratorDto: loginAdministratorDto) {
-    return `Login`;
+
+    const { password, username } = loginAdministratorDto
+
+    const administrator = await this.administatorsModel.findOne({username})
+
+    if(administrator){
+
+      const isValidPassword = await bcrypt.compare(password, administrator.password);
+
+      if(isValidPassword){
+
+        const jwtToken = jwt.sign({ id: administrator._id}, this.jwtSicret);
+
+        return {jwt: jwtToken}
+      }else{
+        return 'Password is wrong';
+      }
+
+   
+
+    }else{
+      return 'User not found';
+    }
+    
   }
 
   update(id: number, updateAdministratorDto: UpdateAdministratorDto) {
