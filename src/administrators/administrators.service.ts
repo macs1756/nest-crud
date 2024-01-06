@@ -59,11 +59,12 @@ export class AdministratorsService {
   }
 
 
-  getMe(request) {
+  getMe(headers) {
 
-    const authorizationHeader = request.headers.authorization;
+    const authorizationHeader = headers.authorization;
+    const clearAuthorizationHeader = authorizationHeader.replace('Bearer ', '')
 
-    return authorizationHeader;
+    return clearAuthorizationHeader;
   }
 
   remove(id: number) {

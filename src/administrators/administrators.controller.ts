@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, Param, Delete } from '@nestjs/common';
 import { AdministratorsService } from './administrators.service';
 import { CreateAdministratorDto } from './dto/create-administrator.dto';
 import { loginAdministratorDto } from './dto/login-administrator.dto'
@@ -19,8 +19,8 @@ export class AdministratorsController {
   }
 
   @Get('/get-me')
-  getMe(@Request() request) {
-    return this.administratorsService.getMe(request);
+  getMe(@Headers() headers) {
+    return this.administratorsService.getMe(headers);
   }
 
   @Delete(':id')
