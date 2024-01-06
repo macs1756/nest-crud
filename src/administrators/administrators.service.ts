@@ -64,6 +64,15 @@ export class AdministratorsService {
     const authorizationHeader = headers.authorization;
     const clearAuthorizationHeader = authorizationHeader.replace('Bearer ', '')
 
+    jwt.verify(token, this.jwtSecret, (err, decoded) => {
+      if (err) {
+        return reject(err); // Токен не валідний або стався інший помилковий випадок
+      }
+
+      return resolve(decoded); // Розшифровані дані з токена
+    });
+
+
     return clearAuthorizationHeader;
   }
 
