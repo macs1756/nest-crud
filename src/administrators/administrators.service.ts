@@ -1,10 +1,8 @@
-import { Injectable,  Request } from '@nestjs/common';
+import { Injectable, Request } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Administrators } from 'src/schemas/user.schema';
-import { CreateAdministratorDto } from './dto/create-administrator.dto';
-import { UpdateAdministratorDto } from './dto/update-administrator.dto';
-import { loginAdministratorDto } from './dto/login-administrator.dto';
+import { DloginAdministratorDto, DcreateAdministratorDto, DchangePasswordAdministratorDto } from './dto/main.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken'
 
@@ -15,7 +13,7 @@ export class AdministratorsService {
 
   readonly jwtSicret = process.env.JWT_SECRET_KEY
 
-  async create(createAdministratorDto: CreateAdministratorDto) {
+  async create(createAdministratorDto: DcreateAdministratorDto) {
 
     const { password, username } = createAdministratorDto
     const isUsed = await this.administatorsModel.findOne({ username: username })
@@ -24,38 +22,38 @@ export class AdministratorsService {
       const hashPassword = await bcrypt.hash(password, 10);
       const newAdministrator = new this.administatorsModel({ password: hashPassword, username });
       await newAdministrator.save();
-      const jwtToken = jwt.sign({ id: newAdministrator._id}, this.jwtSicret);
-      return {jwt:jwtToken, administrator:newAdministrator}
+      const jwtToken = jwt.sign({ id: newAdministrator._id }, this.jwtSicret);
+      return { jwt: jwtToken, administrator: newAdministrator }
     } else {
       return "Username is already in use"
     }
   }
 
 
-  async login(loginAdministratorDto: loginAdministratorDto) {
+  async login(loginAdministratorDto: DloginAdministratorDto) {
 
     const { password, username } = loginAdministratorDto
 
-    const administrator = await this.administatorsModel.findOne({username})
+    const administrator = await this.administatorsModel.findOne({ username })
 
-    if(administrator){
+    if (administrator) {
 
       const isValidPassword = await bcrypt.compare(password, administrator.password);
 
-      if(isValidPassword){
+      if (isValidPassword) {
 
-        const jwtToken = jwt.sign({ id: administrator._id}, this.jwtSicret);
+        const jwtToken = jwt.sign({ id: administrator._id }, this.jwtSicret);
 
-        return {jwt: jwtToken, administrator}
+        return { jwt: jwtToken, administrator }
 
-      }else{
+      } else {
         return 'Password is wrong';
       }
 
-    }else{
+    } else {
       return 'User not found';
     }
-    
+
   }
 
 
@@ -64,22 +62,48 @@ export class AdministratorsService {
     const authorizationHeader = headers.authorization;
     const clearAuthorizationHeader = authorizationHeader.replace('Bearer ', '')
 
-    const verifyJWT:any = jwt.verify(clearAuthorizationHeader, this.jwtSicret);
+    const verifyJWT: any = jwt.verify(clearAuthorizationHeader, this.jwtSicret);
 
 
-    if(verifyJWT){
-
+    if (verifyJWT) {
       const administator = await this.administatorsModel.findById(verifyJWT?.id)
-
       return administator
-
-    }else{
+    } else {
       return 'Token is invalid'
     }
-    
+  }
 
 
-    return verifyJWT;
+  async changePassword(changePasswordAdministratorDto: DchangePasswordAdministratorDto) {
+
+    const { confirmNewPasword, newPassword, password, username } = changePasswordAdministratorDto
+
+
+    if (newPassword === confirmNewPasword) {
+
+      const administarator = await this.administatorsModel.findOne({ username })
+
+      if (administarator) {
+
+        const isValidPassword = await bcrypt.compare(password, administarator.password)
+
+        if (isValidPassword) {
+
+          const id = administarator._id
+          const hashNewPassword = await bcrypt.hash(newPassword, 10);
+          const newAdministrator = await this.administatorsModel.findByIdAndUpdate(id, { password: hashNewPassword });
+          return newAdministrator
+
+        } else { return 'Password is invalid' }
+
+
+      } else { return 'Administrator not found' }
+
+    } else {
+      return "New passwords don't match"
+    }
+
+
   }
 
   remove(id: number) {
