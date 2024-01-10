@@ -75,7 +75,40 @@ export class AdministratorsService {
 
 
   async changePassword(changePasswordAdministratorDto: DchangePasswordAdministratorDto) {
-    return 'change password'
+
+    const { confirmNewPasword, newPassword, password, username } = changePasswordAdministratorDto
+
+
+    if(newPassword === confirmNewPasword){
+
+      const administarator = await this.administatorsModel.findOne({username})
+
+      if(administarator){
+
+        const isValidPassword  = await bcrypt.compare(password, administarator.password)
+
+        if(isValidPassword){
+
+          const id = administarator._id
+
+          const newUser = this.administatorsModel.findByIdAndUpdate(id, {
+            password: newPassword
+          })
+
+          const jwtToken = jwt.sign({ id: newUser._id}, this.jwtSicret);
+
+          return { jwt:jwtToken, newUser }
+
+        }else{ return 'Password is invalid' }
+
+        
+      }else{ return 'Administrator not found' }
+
+    }else{
+      return "New passwords don't match"
+    }
+
+
   }
 
   remove(id: number) {
