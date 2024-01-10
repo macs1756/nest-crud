@@ -1,4 +1,4 @@
-import { Injectable,  Request } from '@nestjs/common';
+import { Injectable, Request } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Administrators } from 'src/schemas/user.schema';
@@ -22,8 +22,8 @@ export class AdministratorsService {
       const hashPassword = await bcrypt.hash(password, 10);
       const newAdministrator = new this.administatorsModel({ password: hashPassword, username });
       await newAdministrator.save();
-      const jwtToken = jwt.sign({ id: newAdministrator._id}, this.jwtSicret);
-      return {jwt:jwtToken, administrator:newAdministrator}
+      const jwtToken = jwt.sign({ id: newAdministrator._id }, this.jwtSicret);
+      return { jwt: jwtToken, administrator: newAdministrator }
     } else {
       return "Username is already in use"
     }
@@ -34,26 +34,26 @@ export class AdministratorsService {
 
     const { password, username } = loginAdministratorDto
 
-    const administrator = await this.administatorsModel.findOne({username})
+    const administrator = await this.administatorsModel.findOne({ username })
 
-    if(administrator){
+    if (administrator) {
 
       const isValidPassword = await bcrypt.compare(password, administrator.password);
 
-      if(isValidPassword){
+      if (isValidPassword) {
 
-        const jwtToken = jwt.sign({ id: administrator._id}, this.jwtSicret);
+        const jwtToken = jwt.sign({ id: administrator._id }, this.jwtSicret);
 
-        return {jwt: jwtToken, administrator}
+        return { jwt: jwtToken, administrator }
 
-      }else{
+      } else {
         return 'Password is wrong';
       }
 
-    }else{
+    } else {
       return 'User not found';
     }
-    
+
   }
 
 
@@ -62,13 +62,13 @@ export class AdministratorsService {
     const authorizationHeader = headers.authorization;
     const clearAuthorizationHeader = authorizationHeader.replace('Bearer ', '')
 
-    const verifyJWT:any = jwt.verify(clearAuthorizationHeader, this.jwtSicret);
+    const verifyJWT: any = jwt.verify(clearAuthorizationHeader, this.jwtSicret);
 
 
-    if(verifyJWT){
+    if (verifyJWT) {
       const administator = await this.administatorsModel.findById(verifyJWT?.id)
       return administator
-    }else{
+    } else {
       return 'Token is invalid'
     }
   }
@@ -79,32 +79,30 @@ export class AdministratorsService {
     const { confirmNewPasword, newPassword, password, username } = changePasswordAdministratorDto
 
 
-    if(newPassword === confirmNewPasword){
+    if (newPassword === confirmNewPasword) {
 
-      const administarator = await this.administatorsModel.findOne({username})
+      const administarator = await this.administatorsModel.findOne({ username })
 
-      if(administarator){
+      if (administarator) {
 
-        const isValidPassword  = await bcrypt.compare(password, administarator.password)
+        const isValidPassword = await bcrypt.compare(password, administarator.password)
 
-        if(isValidPassword){
+        if (isValidPassword) {
 
           const id = administarator._id
 
-          const newUser = this.administatorsModel.findByIdAndUpdate(id, {
-            password: newPassword
-          })
+          const hashNewPassword = await bcrypt.hash(newPassword, 10);
 
-          // const jwtToken = jwt.sign({ id: newUser._id}, this.jwtSicret);
+          const newAdministrator = await this.administatorsModel.findByIdAndUpdate(id, { password: hashNewPassword });
 
-          return newUser
+          return newAdministrator
 
-        }else{ return 'Password is invalid' }
+        } else { return 'Password is invalid' }
 
-        
-      }else{ return 'Administrator not found' }
 
-    }else{
+      } else { return 'Administrator not found' }
+
+    } else {
       return "New passwords don't match"
     }
 
