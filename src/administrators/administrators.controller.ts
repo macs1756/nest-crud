@@ -1,29 +1,29 @@
 import { Controller, Get, Post, Body, Headers, Param, Delete } from '@nestjs/common';
 import { AdministratorsService } from './administrators.service';
-import { CreateAdministratorDto } from './dto/create-administrator.dto';
-import { loginAdministratorDto } from './dto/login-administrator.dto'
+import { DchangePasswordAdministratorDto, DloginAdministratorDto, DcreateAdministratorDto } from './dto/main.dto'
 
 @Controller('administrators')
 export class AdministratorsController {
   constructor(private readonly administratorsService: AdministratorsService) {}
 
   @Post('/register')
-  create(@Body() createAdministratorDto: CreateAdministratorDto) {
+  create(@Body() createAdministratorDto: DcreateAdministratorDto) {
     return this.administratorsService.create(createAdministratorDto);
   }
 
   
   @Post('/login')
-  login(@Body() loginAdministratorDto: loginAdministratorDto) {
+  login(@Body() loginAdministratorDto: DloginAdministratorDto) {
     return this.administratorsService.login(loginAdministratorDto);
   }
 
 
   @Post('/change-password')
-  login(@Body() loginAdministratorDto: loginAdministratorDto) {
-    return this.administratorsService.login(loginAdministratorDto);
+  changePassword(@Body() changePasswordAdministratorDto: DchangePasswordAdministratorDto) {
+    return this.administratorsService.changePassword(changePasswordAdministratorDto);
   }
 
+  
   @Get('/get-me')
   getMe(@Headers() headers) {
     return this.administratorsService.getMe(headers);

@@ -2,9 +2,7 @@ import { Injectable,  Request } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Administrators } from 'src/schemas/user.schema';
-import { CreateAdministratorDto } from './dto/create-administrator.dto';
-import { UpdateAdministratorDto } from './dto/update-administrator.dto';
-import { loginAdministratorDto } from './dto/login-administrator.dto';
+import { DloginAdministratorDto, DcreateAdministratorDto, DchangePasswordAdministratorDto } from './dto/main.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken'
 
@@ -15,7 +13,7 @@ export class AdministratorsService {
 
   readonly jwtSicret = process.env.JWT_SECRET_KEY
 
-  async create(createAdministratorDto: CreateAdministratorDto) {
+  async create(createAdministratorDto: DcreateAdministratorDto) {
 
     const { password, username } = createAdministratorDto
     const isUsed = await this.administatorsModel.findOne({ username: username })
@@ -32,7 +30,7 @@ export class AdministratorsService {
   }
 
 
-  async login(loginAdministratorDto: loginAdministratorDto) {
+  async login(loginAdministratorDto: DloginAdministratorDto) {
 
     const { password, username } = loginAdministratorDto
 
@@ -68,18 +66,16 @@ export class AdministratorsService {
 
 
     if(verifyJWT){
-
       const administator = await this.administatorsModel.findById(verifyJWT?.id)
-
       return administator
-
     }else{
       return 'Token is invalid'
     }
-    
+  }
 
 
-    return verifyJWT;
+  async changePassword(changePasswordAdministratorDto: DchangePasswordAdministratorDto) {
+    return 'change password'
   }
 
   remove(id: number) {
