@@ -95,9 +95,9 @@ export class AdministratorsService {
             password: newPassword
           })
 
-          const jwtToken = jwt.sign({ id: newUser._id}, this.jwtSicret);
+          // const jwtToken = jwt.sign({ id: newUser._id}, this.jwtSicret);
 
-          return { jwt:jwtToken, newUser }
+          return newUser
 
         }else{ return 'Password is invalid' }
 

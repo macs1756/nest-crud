@@ -10,7 +10,6 @@ export class Administrators extends Document {
   @Prop({ required: true })
   password: string;
 
-
 }
 
 export const AdministratorsSchema = SchemaFactory.createForClass(Administrators);
