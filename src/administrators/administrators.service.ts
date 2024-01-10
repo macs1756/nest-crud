@@ -90,11 +90,8 @@ export class AdministratorsService {
         if (isValidPassword) {
 
           const id = administarator._id
-
           const hashNewPassword = await bcrypt.hash(newPassword, 10);
-
           const newAdministrator = await this.administatorsModel.findByIdAndUpdate(id, { password: hashNewPassword });
-
           return newAdministrator
 
         } else { return 'Password is invalid' }
