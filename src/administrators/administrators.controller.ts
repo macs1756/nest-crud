@@ -18,6 +18,12 @@ export class AdministratorsController {
     return this.administratorsService.login(loginAdministratorDto);
   }
 
+
+  @Post('/change-password')
+  login(@Body() loginAdministratorDto: loginAdministratorDto) {
+    return this.administratorsService.login(loginAdministratorDto);
+  }
+
   @Get('/get-me')
   getMe(@Headers() headers) {
     return this.administratorsService.getMe(headers);
